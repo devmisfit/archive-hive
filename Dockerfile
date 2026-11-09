@@ -24,10 +24,10 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && mkdir -p /data /config
 
 # Everything stateful lives in these two host-mapped directories.
-VOLUME ["/data", "/config"]
+# (Railway volumes are attached at /data and /config instead of a Dockerfile VOLUME.)
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-  CMD python -c "import os,urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get(\"PORT\",\"8080\")}/health', timeout=4)" || exit 1
+  CMD python -c "import os,urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.environ.get("PORT","8080")}/health', timeout=4)" || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
